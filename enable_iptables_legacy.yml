@@ -1,0 +1,32 @@
+---
+- name: Configure iptables-legacy for Neutron agents
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install iptables-legacy and set alternatives for neutron_openvswitch_agent
+      community.docker.docker_container_exec:
+        container: neutron_openvswitch_agent
+        user: root
+        command: >
+          bash -c "
+          yum install iptables-legacy -y &&
+          alternatives --set iptables /usr/sbin/iptables-legacy
+          "
+    - name: Install iptables-legacy and set alternatives for neutron_l3_agent
+      community.docker.docker_container_exec:
+        container: neutron_l3_agent
+        user: root
+        command: >
+          bash -c "
+          yum install iptables-legacy -y &&
+          alternatives --set iptables /usr/sbin/iptables-legacy
+          "
+    - name: Install iptables-legacy and set alternatives for neutron_metadata_agent
+      community.docker.docker_container_exec:
+        container: neutron_metadata_agent
+        user: root
+        command: >
+          bash -c "
+          yum install iptables-legacy -y &&
+          alternatives --set iptables /usr/sbin/iptables-legacy
+          "
