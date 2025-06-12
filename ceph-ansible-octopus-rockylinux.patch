@@ -1,0 +1,2729 @@
+diff -Naur ceph-ansible/9252b7517300fd507842a1b76966928048855758.diff ceph-ansible.new/9252b7517300fd507842a1b76966928048855758.diff
+--- ceph-ansible/9252b7517300fd507842a1b76966928048855758.diff	1969-12-31 20:00:00.000000000 -0400
++++ ceph-ansible.new/9252b7517300fd507842a1b76966928048855758.diff	2025-02-12 00:57:29.204669100 -0400
+@@ -0,0 +1,67 @@
++diff --git a/roles/ceph-container-engine/tasks/pre_requisites/prerequisites.yml b/roles/ceph-container-engine/tasks/pre_requisites/prerequisites.yml
++index b00ba46466..5d73a1621b 100644
++--- a/roles/ceph-container-engine/tasks/pre_requisites/prerequisites.yml
+++++ b/roles/ceph-container-engine/tasks/pre_requisites/prerequisites.yml
++@@ -13,7 +13,7 @@
++
++ - name: install container packages
++   package:
++-    name: ['{{ container_package_name }}', '{{ container_binding_name }}']
+++    name: '{{ container_package_name }}'
++     update_cache: true
++   register: result
++   until: result is succeeded
++diff --git a/roles/ceph-container-engine/vars/Debian.yml b/roles/ceph-container-engine/vars/Debian.yml
++index 3df0671856..9e2eaf69ae 100644
++--- a/roles/ceph-container-engine/vars/Debian.yml
+++++ b/roles/ceph-container-engine/vars/Debian.yml
++@@ -1,4 +1,3 @@
++ ---
++ container_package_name: docker-ce
++ container_service_name: docker
++-container_binding_name: python-docker
++diff --git a/roles/ceph-container-engine/vars/RedHat-8.yml b/roles/ceph-container-engine/vars/RedHat-8.yml
++index 3a93dbd046..a46ed44fbc 100644
++--- a/roles/ceph-container-engine/vars/RedHat-8.yml
+++++ b/roles/ceph-container-engine/vars/RedHat-8.yml
++@@ -1,4 +1,3 @@
++ ---
++ container_package_name: podman
++ container_service_name: podman
++-container_binding_name: podman
++diff --git a/roles/ceph-container-engine/vars/RedHat.yml b/roles/ceph-container-engine/vars/RedHat.yml
++index 4a14707dd0..8fca22c278 100644
++--- a/roles/ceph-container-engine/vars/RedHat.yml
+++++ b/roles/ceph-container-engine/vars/RedHat.yml
++@@ -1,4 +1,3 @@
++ ---
++ container_package_name: docker
++ container_service_name: docker
++-container_binding_name: python-docker-py
++diff --git a/roles/ceph-container-engine/vars/Ubuntu-16.yml b/roles/ceph-container-engine/vars/Ubuntu-16.yml
++index b5b7c35293..aa5087fe5a 100644
++--- a/roles/ceph-container-engine/vars/Ubuntu-16.yml
+++++ b/roles/ceph-container-engine/vars/Ubuntu-16.yml
++@@ -1,4 +1,3 @@
++ ---
++ container_package_name: docker.io
++ container_service_name: docker
++-container_binding_name: python-docker
++diff --git a/roles/ceph-container-engine/vars/Ubuntu-18.yml b/roles/ceph-container-engine/vars/Ubuntu-18.yml
++index f457ca03a2..aa5087fe5a 100644
++--- a/roles/ceph-container-engine/vars/Ubuntu-18.yml
+++++ b/roles/ceph-container-engine/vars/Ubuntu-18.yml
++@@ -1,4 +1,3 @@
++ ---
++ container_package_name: docker.io
++ container_service_name: docker
++-container_binding_name: python3-docker
++diff --git a/roles/ceph-container-engine/vars/Ubuntu-20.yml b/roles/ceph-container-engine/vars/Ubuntu-20.yml
++index f457ca03a2..aa5087fe5a 100644
++--- a/roles/ceph-container-engine/vars/Ubuntu-20.yml
+++++ b/roles/ceph-container-engine/vars/Ubuntu-20.yml
++@@ -1,4 +1,3 @@
++ ---
++ container_package_name: docker.io
++ container_service_name: docker
++-container_binding_name: python3-docker
+diff -Naur ceph-ansible/contrib/vagrant_variables.yml.linode ceph-ansible.new/contrib/vagrant_variables.yml.linode
+--- ceph-ansible/contrib/vagrant_variables.yml.linode	2025-02-12 00:57:05.902862196 -0400
++++ ceph-ansible.new/contrib/vagrant_variables.yml.linode	2025-02-12 00:57:28.965012603 -0400
+@@ -9,7 +9,7 @@
+ ssh_username: 'vagrant'
+ ssh_private_key_path: '~/.ssh/id_rsa'
+ 
+-cloud_distribution: 'CentOS 7'
++cloud_distribution: 'Rocky 7'
+ cloud_datacenter: 'newark'
+ 
+ # Memory for each Linode instance, this determines price! See Linode plans.
+diff -Naur ceph-ansible/contrib/vagrant_variables.yml.openstack ceph-ansible.new/contrib/vagrant_variables.yml.openstack
+--- ceph-ansible/contrib/vagrant_variables.yml.openstack	2025-02-12 00:57:05.903865999 -0400
++++ ceph-ansible.new/contrib/vagrant_variables.yml.openstack	2025-02-12 00:57:28.964022287 -0400
+@@ -27,7 +27,7 @@
+ # For Openstack VMs, choose the following box instead
+ vagrant_box: 'openstack'
+ 
+-# When using Atomic Hosts (RHEL or CentOS), uncomment the line below to skip package installation
++# When using Atomic Hosts (RHEL or Rocky), uncomment the line below to skip package installation
+ #skip_tags: 'with_pkg'
+ 
+ # Set a label prefix for the machines in this cluster to differentiate
+diff -Naur ceph-ansible/docs/source/index.rst ceph-ansible.new/docs/source/index.rst
+--- ceph-ansible/docs/source/index.rst	2025-02-12 00:57:05.903865999 -0400
++++ ceph-ansible.new/docs/source/index.rst	2025-02-12 00:57:28.966993235 -0400
+@@ -35,10 +35,10 @@
+ 
+ .. _ansible-on-rhel-family:
+ 
+-Ansible on RHEL and CentOS
++Ansible on RHEL and Rocky
+ --------------------------
+ 
+-You can acquire Ansible on RHEL and CentOS by installing from `Ansible channel <https://access.redhat.com/articles/3174981>`_.
++You can acquire Ansible on RHEL and Rocky by installing from `Ansible channel <https://access.redhat.com/articles/3174981>`_.
+ 
+ On RHEL:
+ 
+@@ -46,7 +46,7 @@
+ 
+    $ subscription-manager repos --enable=rhel-7-server-ansible-2-rpms
+ 
+-(CentOS does not use subscription-manager and already has "Extras" enabled by default.)
++(Rocky does not use subscription-manager and already has "Extras" enabled by default.)
+ 
+ .. code-block:: console
+ 
+diff -Naur ceph-ansible/docs/source/testing/scenarios.rst ceph-ansible.new/docs/source/testing/scenarios.rst
+--- ceph-ansible/docs/source/testing/scenarios.rst	2025-02-12 00:57:05.904869803 -0400
++++ ceph-ansible.new/docs/source/testing/scenarios.rst	2025-02-12 00:57:28.972935132 -0400
+@@ -78,7 +78,7 @@
+ 
+ * **interfaces**: some vagrant boxes (and linux distros) set specific
+   interfaces. For Ubuntu releases older than Xenial it was common to have
+-  ``eth1``, for CentOS and some Xenial boxes ``enp0s8`` is used. **However**
++  ``eth1``, for Rocky and some Xenial boxes ``enp0s8`` is used. **However**
+   the public Vagrant boxes normalize the interface to ``eth1`` for all boxes,
+   making it easier to configure them with Ansible later.
+ 
+diff -Naur ceph-ansible/group_vars/all.yml.sample ceph-ansible.new/group_vars/all.yml.sample
+--- ceph-ansible/group_vars/all.yml.sample	2025-02-12 00:57:05.904869803 -0400
++++ ceph-ansible.new/group_vars/all.yml.sample	2025-02-12 00:57:29.088802116 -0400
+@@ -558,7 +558,7 @@
+ #  - { name: vm.swappiness, value: 10 }
+ #  - { name: vm.min_free_kbytes, value: "{{ vm_min_free_kbytes }}" }
+ 
+-# For Debian & Red Hat/CentOS installs set TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES
++# For Debian & Red Hat/Rocky installs set TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES
+ # Set this to a byte value (e.g. 134217728)
+ # A value of 0 will leave the package default.
+ #ceph_tcmalloc_max_total_thread_cache: 134217728
+diff -Naur ceph-ansible/group_vars/rhcs.yml.sample ceph-ansible.new/group_vars/rhcs.yml.sample
+--- ceph-ansible/group_vars/rhcs.yml.sample	2025-02-12 00:57:05.905873607 -0400
++++ ceph-ansible.new/group_vars/rhcs.yml.sample	2025-02-12 00:57:29.084840851 -0400
+@@ -558,7 +558,7 @@
+ #  - { name: vm.swappiness, value: 10 }
+ #  - { name: vm.min_free_kbytes, value: "{{ vm_min_free_kbytes }}" }
+ 
+-# For Debian & Red Hat/CentOS installs set TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES
++# For Debian & Red Hat/Rocky installs set TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES
+ # Set this to a byte value (e.g. 134217728)
+ # A value of 0 will leave the package default.
+ #ceph_tcmalloc_max_total_thread_cache: 134217728
+diff -Naur ceph-ansible/raw_install_python.yml ceph-ansible.new/raw_install_python.yml
+--- ceph-ansible/raw_install_python.yml	2025-02-12 00:57:05.910892624 -0400
++++ ceph-ansible.new/raw_install_python.yml	2025-02-12 00:57:29.204669100 -0400
+@@ -11,13 +11,13 @@
+     - /usr/libexec/platform-python
+ 
+ - block:
+-    - name: check for dnf-3 package manager (RedHat/Fedora/CentOS)
++    - name: check for dnf-3 package manager (RedHat/Fedora/Rocky)
+       raw: stat /bin/dnf-3
+       changed_when: false
+       failed_when: false
+       register: stat_dnf3
+ 
+-    - name: check for yum package manager (RedHat/Fedora/CentOS)
++    - name: check for yum package manager (RedHat/Fedora/Rocky)
+       raw: stat /bin/yum
+       changed_when: false
+       failed_when: false
+diff -Naur ceph-ansible/RELEASE-NOTE.md ceph-ansible.new/RELEASE-NOTE.md
+--- ceph-ansible/RELEASE-NOTE.md	2025-02-12 00:57:05.902862196 -0400
++++ ceph-ansible.new/RELEASE-NOTE.md	2025-02-12 00:57:29.203678784 -0400
+@@ -16,13 +16,13 @@
+ Added features
+ ----------------
+ 
+-* Add full CentOS 8 support.
++* Add full Rocky 8 support.
+ * Add RHCS 5 support.
+ 
+ Removed features
+ ----------------
+ 
+-* Remove CentOS 7 support for non containerized deployment with dashboard enabled.
++* Remove Rocky 7 support for non containerized deployment with dashboard enabled.
+ 
+ Deprecation warnings and incoming removal
+ -----------------------------------------
+diff -Naur ceph-ansible/roles/ceph-common/tasks/installs/install_redhat_packages.yml ceph-ansible.new/roles/ceph-common/tasks/installs/install_redhat_packages.yml
+--- ceph-ansible/roles/ceph-common/tasks/installs/install_redhat_packages.yml	2025-02-12 00:57:05.912900231 -0400
++++ ceph-ansible.new/roles/ceph-common/tasks/installs/install_redhat_packages.yml	2025-02-12 00:57:29.153172662 -0400
+@@ -13,7 +13,7 @@
+     state: present
+   register: result
+   until: result is succeeded
+-  when: ansible_facts['distribution'] == 'CentOS'
++  when: ansible_facts['distribution'] == 'Rocky'
+ 
+ - name: install redhat ceph packages
+   package:
+diff -Naur ceph-ansible/roles/ceph-container-engine/tasks/pre_requisites/prerequisites.yml ceph-ansible.new/roles/ceph-container-engine/tasks/pre_requisites/prerequisites.yml
+--- ceph-ansible/roles/ceph-container-engine/tasks/pre_requisites/prerequisites.yml	2025-02-12 00:57:05.913904035 -0400
++++ ceph-ansible.new/roles/ceph-container-engine/tasks/pre_requisites/prerequisites.yml	2025-02-12 00:57:29.177930565 -0400
+@@ -19,26 +19,26 @@
+     state: present
+     enabled: yes
+   when:
+-    - ansible_facts['distribution'] == 'CentOS'
++    - ansible_facts['distribution'] == 'Rocky'
+     - ceph_docker_enable_centos_extra_repo | bool
+   tags:
+     with_pkg
+ 
+-- name: install container packages
+-  package:
+-    name: ['{{ container_package_name }}', '{{ container_binding_name }}']
+-    update_cache: true
+-  register: result
+-  until: result is succeeded
+-  tags: with_pkg
++#- name: install container packages
++#  package:
++#    name: '{{ container_package_name }}'
++#    update_cache: true
++#  register: result
++#  until: result is succeeded
++#  tags: with_pkg
+ 
+-- name: install lvm2 package
+-  package:
+-    name: lvm2
+-  register: result
+-  until: result is succeeded
+-  tags: with_pkg
+-  when: inventory_hostname in groups.get(osd_group_name, [])
++#- name: install lvm2 package
++#  package:
++#    name: lvm2
++#  register: result
++#  until: result is succeeded
++#  tags: with_pkg
++#  when: inventory_hostname in groups.get(osd_group_name, [])
+ 
+ - name: extra configuration for docker
+   when: container_service_name == 'docker'
+diff -Naur ceph-ansible/roles/ceph-container-engine/vars/CentOS-8.yml ceph-ansible.new/roles/ceph-container-engine/vars/CentOS-8.yml
+--- ceph-ansible/roles/ceph-container-engine/vars/CentOS-8.yml	2025-02-12 00:57:05.913904035 -0400
++++ ceph-ansible.new/roles/ceph-container-engine/vars/CentOS-8.yml	2025-02-12 00:57:29.179911197 -0400
+@@ -1,4 +1,3 @@
+ ---
+ container_package_name: podman
+ container_service_name: podman
+-container_binding_name: podman
+diff -Naur ceph-ansible/roles/ceph-container-engine/vars/Debian.yml ceph-ansible.new/roles/ceph-container-engine/vars/Debian.yml
+--- ceph-ansible/roles/ceph-container-engine/vars/Debian.yml	2025-02-12 00:57:05.913904035 -0400
++++ ceph-ansible.new/roles/ceph-container-engine/vars/Debian.yml	2025-02-12 00:57:29.178920881 -0400
+@@ -1,4 +1,3 @@
+ ---
+ container_package_name: docker-ce
+ container_service_name: docker
+-container_binding_name: python-docker
+diff -Naur ceph-ansible/roles/ceph-container-engine/vars/RedHat-8.yml ceph-ansible.new/roles/ceph-container-engine/vars/RedHat-8.yml
+--- ceph-ansible/roles/ceph-container-engine/vars/RedHat-8.yml	2025-02-12 00:57:05.913904035 -0400
++++ ceph-ansible.new/roles/ceph-container-engine/vars/RedHat-8.yml	2025-02-12 00:57:29.179911197 -0400
+@@ -1,4 +1,3 @@
+ ---
+ container_package_name: podman
+ container_service_name: podman
+-container_binding_name: podman
+diff -Naur ceph-ansible/roles/ceph-container-engine/vars/RedHat.yml ceph-ansible.new/roles/ceph-container-engine/vars/RedHat.yml
+--- ceph-ansible/roles/ceph-container-engine/vars/RedHat.yml	2025-02-12 00:57:05.913904035 -0400
++++ ceph-ansible.new/roles/ceph-container-engine/vars/RedHat.yml	2025-02-12 00:57:29.179911197 -0400
+@@ -1,4 +1,3 @@
+ ---
+ container_package_name: docker
+ container_service_name: docker
+-container_binding_name: python-docker-py
+diff -Naur ceph-ansible/roles/ceph-container-engine/vars/Rocky-8.yml ceph-ansible.new/roles/ceph-container-engine/vars/Rocky-8.yml
+--- ceph-ansible/roles/ceph-container-engine/vars/Rocky-8.yml	1969-12-31 20:00:00.000000000 -0400
++++ ceph-ansible.new/roles/ceph-container-engine/vars/Rocky-8.yml	2025-02-12 00:57:29.178920881 -0400
+@@ -0,0 +1,3 @@
++---
++container_package_name: docker-ce
++container_service_name: docker
+diff -Naur ceph-ansible/roles/ceph-container-engine/vars/Rocky.yml ceph-ansible.new/roles/ceph-container-engine/vars/Rocky.yml
+--- ceph-ansible/roles/ceph-container-engine/vars/Rocky.yml	1969-12-31 20:00:00.000000000 -0400
++++ ceph-ansible.new/roles/ceph-container-engine/vars/Rocky.yml	2025-02-12 00:57:29.178920881 -0400
+@@ -0,0 +1,3 @@
++---
++container_package_name: docker-ce
++container_service_name: docker
+diff -Naur ceph-ansible/roles/ceph-container-engine/vars/Ubuntu-16.yml ceph-ansible.new/roles/ceph-container-engine/vars/Ubuntu-16.yml
+--- ceph-ansible/roles/ceph-container-engine/vars/Ubuntu-16.yml	2025-02-12 00:57:05.913904035 -0400
++++ ceph-ansible.new/roles/ceph-container-engine/vars/Ubuntu-16.yml	2025-02-12 00:57:29.179911197 -0400
+@@ -1,4 +1,3 @@
+ ---
+ container_package_name: docker.io
+ container_service_name: docker
+-container_binding_name: python-docker
+diff -Naur ceph-ansible/roles/ceph-container-engine/vars/Ubuntu-18.yml ceph-ansible.new/roles/ceph-container-engine/vars/Ubuntu-18.yml
+--- ceph-ansible/roles/ceph-container-engine/vars/Ubuntu-18.yml	2025-02-12 00:57:05.913904035 -0400
++++ ceph-ansible.new/roles/ceph-container-engine/vars/Ubuntu-18.yml	2025-02-12 00:57:29.180901513 -0400
+@@ -1,4 +1,3 @@
+ ---
+ container_package_name: docker.io
+ container_service_name: docker
+-container_binding_name: python3-docker
+diff -Naur ceph-ansible/roles/ceph-container-engine/vars/Ubuntu-20.yml ceph-ansible.new/roles/ceph-container-engine/vars/Ubuntu-20.yml
+--- ceph-ansible/roles/ceph-container-engine/vars/Ubuntu-20.yml	2025-02-12 00:57:05.913904035 -0400
++++ ceph-ansible.new/roles/ceph-container-engine/vars/Ubuntu-20.yml	2025-02-12 00:57:29.180901513 -0400
+@@ -1,4 +1,3 @@
+ ---
+ container_package_name: docker.io
+ container_service_name: docker
+-container_binding_name: python3-docker
+diff -Naur ceph-ansible/roles/ceph-defaults/defaults/main.yml ceph-ansible.new/roles/ceph-defaults/defaults/main.yml
+--- ceph-ansible/roles/ceph-defaults/defaults/main.yml	2025-02-12 00:57:05.914907839 -0400
++++ ceph-ansible.new/roles/ceph-defaults/defaults/main.yml	2025-02-12 00:57:29.114550334 -0400
+@@ -550,7 +550,7 @@
+   - { name: vm.swappiness, value: 10 }
+   - { name: vm.min_free_kbytes, value: "{{ vm_min_free_kbytes }}" }
+ 
+-# For Debian & Red Hat/CentOS installs set TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES
++# For Debian & Red Hat/Rocky installs set TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES
+ # Set this to a byte value (e.g. 134217728)
+ # A value of 0 will leave the package default.
+ ceph_tcmalloc_max_total_thread_cache: 134217728
+diff -Naur ceph-ansible/roles/ceph-infra/tasks/main.yml ceph-ansible.new/roles/ceph-infra/tasks/main.yml
+--- ceph-ansible/roles/ceph-infra/tasks/main.yml	2025-02-12 00:57:05.918923053 -0400
++++ ceph-ansible.new/roles/ceph-infra/tasks/main.yml	2025-02-12 00:57:29.154162979 -0400
+@@ -19,23 +19,23 @@
+   when: ntp_service_enabled | bool
+   tags: configure_ntp
+ 
+-- name: ensure logrotate is installed
+-  package:
+-    name: logrotate
+-    state: present
+-  register: result
+-  until: result is succeeded
+-  tags: with_pkg
+-  when:
+-    - not is_atomic | bool
+-    - containerized_deployment | bool
+-    - inventory_hostname in groups.get(mon_group_name, []) or
+-      inventory_hostname in groups.get(osd_group_name, []) or
+-      inventory_hostname in groups.get(mds_group_name, []) or
+-      inventory_hostname in groups.get(rgw_group_name, []) or
+-      inventory_hostname in groups.get(mgr_group_name, []) or
+-      inventory_hostname in groups.get(rbdmirror_group_name, []) or
+-      inventory_hostname in groups.get(iscsi_gw_group_name, [])
++#- name: ensure logrotate is installed
++#  package:
++#    name: logrotate
++#    state: present
++#  register: result
++#  until: result is succeeded
++#  tags: with_pkg
++#  when:
++#    - not is_atomic | bool
++#    - containerized_deployment | bool
++#    - inventory_hostname in groups.get(mon_group_name, []) or
++#      inventory_hostname in groups.get(osd_group_name, []) or
++#      inventory_hostname in groups.get(mds_group_name, []) or
++#      inventory_hostname in groups.get(rgw_group_name, []) or
++#      inventory_hostname in groups.get(mgr_group_name, []) or
++#      inventory_hostname in groups.get(rbdmirror_group_name, []) or
++#      inventory_hostname in groups.get(iscsi_gw_group_name, [])
+ 
+ - name: add logrotate configuration
+   template:
+@@ -52,4 +52,4 @@
+       inventory_hostname in groups.get(rgw_group_name, []) or
+       inventory_hostname in groups.get(mgr_group_name, []) or
+       inventory_hostname in groups.get(rbdmirror_group_name, []) or
+-      inventory_hostname in groups.get(iscsi_gw_group_name, [])
+\ No newline at end of file
++      inventory_hostname in groups.get(iscsi_gw_group_name, [])
+diff -Naur ceph-ansible/roles/ceph-validate/tasks/check_iscsi.yml ceph-ansible.new/roles/ceph-validate/tasks/check_iscsi.yml
+--- ceph-ansible/roles/ceph-validate/tasks/check_iscsi.yml	2025-02-12 00:57:05.925949678 -0400
++++ ceph-ansible.new/roles/ceph-validate/tasks/check_iscsi.yml	2025-02-12 00:57:29.185853094 -0400
+@@ -1,8 +1,8 @@
+ ---
+ - name: fail on unsupported distribution for iscsi gateways
+   fail:
+-    msg: "iSCSI gateways can only be deployed on Red Hat Enterprise Linux, CentOS or Fedora"
+-  when: ansible_facts['distribution'] not in ['RedHat', 'CentOS', 'Fedora']
++    msg: "iSCSI gateways can only be deployed on Red Hat Enterprise Linux, Rocky or Fedora"
++  when: ansible_facts['distribution'] not in ['RedHat', 'Rocky', 'Fedora']
+ 
+ - name: make sure gateway_ip_list is configured
+   fail:
+@@ -39,4 +39,4 @@
+     - CONFIG_TARGET_CORE
+     - CONFIG_TCM_USER2
+     - CONFIG_ISCSI_TARGET
+-  when: ansible_facts['distribution'] in ['RedHat', 'CentOS']
++  when: ansible_facts['distribution'] in ['RedHat', 'Rocky']
+diff -Naur ceph-ansible/roles/ceph-validate/tasks/check_system.yml ceph-ansible.new/roles/ceph-validate/tasks/check_system.yml
+--- ceph-ansible/roles/ceph-validate/tasks/check_system.yml	2025-02-12 00:57:05.925949678 -0400
++++ ceph-ansible.new/roles/ceph-validate/tasks/check_system.yml	2025-02-12 00:57:29.185853094 -0400
+@@ -19,16 +19,21 @@
+     msg: "Architecture not supported {{ ansible_facts['architecture'] }}"
+   when: ansible_facts['architecture'] not in ['x86_64', 'ppc64le', 'armv7l', 'aarch64']
+ 
++- name: Force Rocky Linux to be recognized as RedHat
++  set_fact:
++    ansible_distribution: "RedHat"
++  when: ansible_facts['distribution'] == "Rocky"
++
+ - name: fail on unsupported distribution
+   fail:
+     msg: "Distribution not supported {{ ansible_facts['os_family'] }}"
+-  when: ansible_facts['os_family'] not in ['Debian', 'RedHat', 'ClearLinux', 'Suse']
++  when: ansible_facts['os_family'] not in ['Debian', 'RedHat', 'ClearLinux', 'Suse', 'Rocky']
+ 
+-- name: fail on unsupported CentOS release
++- name: fail on unsupported Rocky release
+   fail:
+-    msg: "CentOS release not supported {{ ansible_facts['distribution_major_version'] }} with dashboard"
++    msg: "Rocky release not supported {{ ansible_facts['distribution_major_version'] }} with dashboard"
+   when:
+-    - ansible_facts['distribution'] == 'CentOS'
++    - ansible_facts['distribution'] == 'Rocky'
+     - ansible_facts['distribution_major_version'] | int == 7
+     - not containerized_deployment | bool
+     - dashboard_enabled | bool
+diff -Naur ceph-ansible/tests/conftest.py ceph-ansible.new/tests/conftest.py
+--- ceph-ansible/tests/conftest.py	2025-02-12 00:57:05.925949678 -0400
++++ ceph-ansible.new/tests/conftest.py	2025-02-12 00:57:28.975906080 -0400
+@@ -31,7 +31,7 @@
+ 
+     ansible_distribution = ansible_facts["ansible_facts"]["ansible_distribution"]
+ 
+-    if ansible_distribution == "CentOS":
++    if ansible_distribution == "Rocky":
+         public_interface = "eth1"
+         cluster_interface = "eth2"
+     else:
+diff -Naur ceph-ansible/tests/functional/add-mdss/container/vagrant_variables.yml ceph-ansible.new/tests/functional/add-mdss/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/add-mdss/container/vagrant_variables.yml	2025-02-12 00:57:05.926953481 -0400
++++ ceph-ansible.new/tests/functional/add-mdss/container/vagrant_variables.yml	2025-02-12 00:57:28.989770506 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.64
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/add-mdss/vagrant_variables.yml ceph-ansible.new/tests/functional/add-mdss/vagrant_variables.yml
+--- ceph-ansible/tests/functional/add-mdss/vagrant_variables.yml	2025-02-12 00:57:05.926953481 -0400
++++ ceph-ansible.new/tests/functional/add-mdss/vagrant_variables.yml	2025-02-12 00:57:28.987789874 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.62
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/add-mgrs/container/vagrant_variables.yml ceph-ansible.new/tests/functional/add-mgrs/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/add-mgrs/container/vagrant_variables.yml	2025-02-12 00:57:05.926953481 -0400
++++ ceph-ansible.new/tests/functional/add-mgrs/container/vagrant_variables.yml	2025-02-12 00:57:29.001654299 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.76
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/add-mgrs/vagrant_variables.yml ceph-ansible.new/tests/functional/add-mgrs/vagrant_variables.yml
+--- ceph-ansible/tests/functional/add-mgrs/vagrant_variables.yml	2025-02-12 00:57:05.926953481 -0400
++++ ceph-ansible.new/tests/functional/add-mgrs/vagrant_variables.yml	2025-02-12 00:57:29.000663983 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.74
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 512
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/add-mons/container/vagrant_variables.yml ceph-ansible.new/tests/functional/add-mons/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/add-mons/container/vagrant_variables.yml	2025-02-12 00:57:05.927957285 -0400
++++ ceph-ansible.new/tests/functional/add-mons/container/vagrant_variables.yml	2025-02-12 00:57:29.015518724 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.56
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/add-mons/vagrant_variables.yml ceph-ansible.new/tests/functional/add-mons/vagrant_variables.yml
+--- ceph-ansible/tests/functional/add-mons/vagrant_variables.yml	2025-02-12 00:57:05.927957285 -0400
++++ ceph-ansible.new/tests/functional/add-mons/vagrant_variables.yml	2025-02-12 00:57:29.014528408 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.54
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 512
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/add-osds/container/group_vars/all ceph-ansible.new/tests/functional/add-osds/container/group_vars/all
+--- ceph-ansible/tests/functional/add-osds/container/group_vars/all	2025-02-12 00:57:05.927957285 -0400
++++ ceph-ansible.new/tests/functional/add-osds/container/group_vars/all	2025-02-12 00:57:29.020470305 -0400
+@@ -6,8 +6,8 @@
+ cluster: ceph
+ public_network: "192.168.55.0/24"
+ cluster_network: "192.168.56.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ osd_objectstore: "bluestore"
+ copy_admin_key: true
+diff -Naur ceph-ansible/tests/functional/add-osds/container/vagrant_variables.yml ceph-ansible.new/tests/functional/add-osds/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/add-osds/container/vagrant_variables.yml	2025-02-12 00:57:05.927957285 -0400
++++ ceph-ansible.new/tests/functional/add-osds/container/vagrant_variables.yml	2025-02-12 00:57:29.019479989 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.56
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/add-osds/group_vars/all ceph-ansible.new/tests/functional/add-osds/group_vars/all
+--- ceph-ansible/tests/functional/add-osds/group_vars/all	2025-02-12 00:57:05.927957285 -0400
++++ ceph-ansible.new/tests/functional/add-osds/group_vars/all	2025-02-12 00:57:29.020470305 -0400
+@@ -4,8 +4,8 @@
+ cluster: ceph
+ public_network: "192.168.53.0/24"
+ cluster_network: "192.168.54.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ osd_objectstore: "bluestore"
+ copy_admin_key: true
+diff -Naur ceph-ansible/tests/functional/add-osds/vagrant_variables.yml ceph-ansible.new/tests/functional/add-osds/vagrant_variables.yml
+--- ceph-ansible/tests/functional/add-osds/vagrant_variables.yml	2025-02-12 00:57:05.927957285 -0400
++++ ceph-ansible.new/tests/functional/add-osds/vagrant_variables.yml	2025-02-12 00:57:29.019479989 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.54
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/add-rbdmirrors/container/group_vars/all ceph-ansible.new/tests/functional/add-rbdmirrors/container/group_vars/all
+--- ceph-ansible/tests/functional/add-rbdmirrors/container/group_vars/all	2025-02-12 00:57:05.927957285 -0400
++++ ceph-ansible.new/tests/functional/add-rbdmirrors/container/group_vars/all	2025-02-12 00:57:29.024431569 -0400
+@@ -6,8 +6,8 @@
+ cluster: ceph
+ public_network: "192.168.67.0/24"
+ cluster_network: "192.168.68.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ osd_objectstore: "bluestore"
+ copy_admin_key: true
+diff -Naur ceph-ansible/tests/functional/add-rbdmirrors/container/vagrant_variables.yml ceph-ansible.new/tests/functional/add-rbdmirrors/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/add-rbdmirrors/container/vagrant_variables.yml	2025-02-12 00:57:05.927957285 -0400
++++ ceph-ansible.new/tests/functional/add-rbdmirrors/container/vagrant_variables.yml	2025-02-12 00:57:29.023441253 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.68
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/add-rbdmirrors/group_vars/all ceph-ansible.new/tests/functional/add-rbdmirrors/group_vars/all
+--- ceph-ansible/tests/functional/add-rbdmirrors/group_vars/all	2025-02-12 00:57:05.927957285 -0400
++++ ceph-ansible.new/tests/functional/add-rbdmirrors/group_vars/all	2025-02-12 00:57:29.024431569 -0400
+@@ -4,8 +4,8 @@
+ cluster: ceph
+ public_network: "192.168.65.0/24"
+ cluster_network: "192.168.66.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ osd_objectstore: "bluestore"
+ copy_admin_key: true
+diff -Naur ceph-ansible/tests/functional/add-rbdmirrors/vagrant_variables.yml ceph-ansible.new/tests/functional/add-rbdmirrors/vagrant_variables.yml
+--- ceph-ansible/tests/functional/add-rbdmirrors/vagrant_variables.yml	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/add-rbdmirrors/vagrant_variables.yml	2025-02-12 00:57:29.022450937 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.66
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/add-rgws/container/group_vars/all ceph-ansible.new/tests/functional/add-rgws/container/group_vars/all
+--- ceph-ansible/tests/functional/add-rgws/container/group_vars/all	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/add-rgws/container/group_vars/all	2025-02-12 00:57:29.037305679 -0400
+@@ -6,8 +6,8 @@
+ cluster: ceph
+ public_network: "192.168.71.0/24"
+ cluster_network: "192.168.72.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ osd_objectstore: "bluestore"
+ copy_admin_key: true
+diff -Naur ceph-ansible/tests/functional/add-rgws/container/vagrant_variables.yml ceph-ansible.new/tests/functional/add-rgws/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/add-rgws/container/vagrant_variables.yml	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/add-rgws/container/vagrant_variables.yml	2025-02-12 00:57:29.036315363 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.72
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/add-rgws/group_vars/all ceph-ansible.new/tests/functional/add-rgws/group_vars/all
+--- ceph-ansible/tests/functional/add-rgws/group_vars/all	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/add-rgws/group_vars/all	2025-02-12 00:57:29.037305679 -0400
+@@ -4,8 +4,8 @@
+ cluster: ceph
+ public_network: "192.168.69.0/24"
+ cluster_network: "192.168.70.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ osd_objectstore: "bluestore"
+ copy_admin_key: true
+diff -Naur ceph-ansible/tests/functional/add-rgws/vagrant_variables.yml ceph-ansible.new/tests/functional/add-rgws/vagrant_variables.yml
+--- ceph-ansible/tests/functional/add-rgws/vagrant_variables.yml	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/add-rgws/vagrant_variables.yml	2025-02-12 00:57:29.036315363 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.70
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/all_daemons/container/group_vars/all ceph-ansible.new/tests/functional/all_daemons/container/group_vars/all
+--- ceph-ansible/tests/functional/all_daemons/container/group_vars/all	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/all_daemons/container/group_vars/all	2025-02-12 00:57:29.042257259 -0400
+@@ -4,8 +4,8 @@
+ docker: True
+ 
+ containerized_deployment: True
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+ public_network: "192.168.17.0/24"
+diff -Naur ceph-ansible/tests/functional/all_daemons/container/hosts ceph-ansible.new/tests/functional/all_daemons/container/hosts
+--- ceph-ansible/tests/functional/all_daemons/container/hosts	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/all_daemons/container/hosts	2025-02-12 00:57:29.041266943 -0400
+@@ -1,6 +1,6 @@
+ [mons]
+ mon0 monitor_address=192.168.17.10
+-mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ mon2 monitor_address=192.168.17.12
+ 
+ [mgrs]
+diff -Naur ceph-ansible/tests/functional/all_daemons/container/hosts-ubuntu ceph-ansible.new/tests/functional/all_daemons/container/hosts-ubuntu
+--- ceph-ansible/tests/functional/all_daemons/container/hosts-ubuntu	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/all_daemons/container/hosts-ubuntu	2025-02-12 00:57:29.042257259 -0400
+@@ -1,6 +1,6 @@
+ [mons]
+ mon0 monitor_address=192.168.17.10
+-mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ mon2 monitor_address=192.168.17.12
+ 
+ [mgrs]
+diff -Naur ceph-ansible/tests/functional/all_daemons/container/vagrant_variables.yml ceph-ansible.new/tests/functional/all_daemons/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/all_daemons/container/vagrant_variables.yml	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/all_daemons/container/vagrant_variables.yml	2025-02-12 00:57:29.042257259 -0400
+@@ -20,12 +20,12 @@
+ cluster_subnet: 192.168.18
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -36,8 +36,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/all_daemons/group_vars/all ceph-ansible.new/tests/functional/all_daemons/group_vars/all
+--- ceph-ansible/tests/functional/all_daemons/group_vars/all	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/all_daemons/group_vars/all	2025-02-12 00:57:29.046218523 -0400
+@@ -3,7 +3,7 @@
+ ceph_repository: community
+ public_network: "192.168.1.0/24"
+ cluster_network: "192.168.2.0/24"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_conf_overrides:
+   global:
+     mon_allow_pool_size_one: true
+diff -Naur ceph-ansible/tests/functional/all_daemons/hosts ceph-ansible.new/tests/functional/all_daemons/hosts
+--- ceph-ansible/tests/functional/all_daemons/hosts	2025-02-12 00:57:05.929964892 -0400
++++ ceph-ansible.new/tests/functional/all_daemons/hosts	2025-02-12 00:57:29.041266943 -0400
+@@ -1,6 +1,6 @@
+ [mons]
+ mon0 monitor_address=192.168.1.10
+-mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ mon2 monitor_address=192.168.1.12
+ 
+ [mgrs]
+diff -Naur ceph-ansible/tests/functional/all_daemons/hosts-switch-to-containers ceph-ansible.new/tests/functional/all_daemons/hosts-switch-to-containers
+--- ceph-ansible/tests/functional/all_daemons/hosts-switch-to-containers	2025-02-12 00:57:05.929964892 -0400
++++ ceph-ansible.new/tests/functional/all_daemons/hosts-switch-to-containers	2025-02-12 00:57:29.040276627 -0400
+@@ -3,7 +3,7 @@
+ 
+ [mons]
+ mon0 monitor_address=192.168.1.10
+-mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ mon2 monitor_address=192.168.1.12
+ 
+ [mgrs]
+diff -Naur ceph-ansible/tests/functional/all_daemons/vagrant_variables.yml ceph-ansible.new/tests/functional/all_daemons/vagrant_variables.yml
+--- ceph-ansible/tests/functional/all_daemons/vagrant_variables.yml	2025-02-12 00:57:05.929964892 -0400
++++ ceph-ansible.new/tests/functional/all_daemons/vagrant_variables.yml	2025-02-12 00:57:29.040276627 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.2
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/all-in-one/container/group_vars/all ceph-ansible.new/tests/functional/all-in-one/container/group_vars/all
+--- ceph-ansible/tests/functional/all-in-one/container/group_vars/all	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/all-in-one/container/group_vars/all	2025-02-12 00:57:29.039286311 -0400
+@@ -4,8 +4,8 @@
+ docker: True
+ 
+ containerized_deployment: True
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ radosgw_num_instances: 2
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+diff -Naur ceph-ansible/tests/functional/all-in-one/container/vagrant_variables.yml ceph-ansible.new/tests/functional/all-in-one/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/all-in-one/container/vagrant_variables.yml	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/all-in-one/container/vagrant_variables.yml	2025-02-12 00:57:29.039286311 -0400
+@@ -20,12 +20,12 @@
+ cluster_subnet: 192.168.20
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -36,8 +36,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/all-in-one/group_vars/all ceph-ansible.new/tests/functional/all-in-one/group_vars/all
+--- ceph-ansible/tests/functional/all-in-one/group_vars/all	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/all-in-one/group_vars/all	2025-02-12 00:57:29.040276627 -0400
+@@ -2,8 +2,8 @@
+ containerized_deployment: False
+ ceph_origin: repository
+ ceph_repository: community
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+ openstack_config: True
+diff -Naur ceph-ansible/tests/functional/all-in-one/vagrant_variables.yml ceph-ansible.new/tests/functional/all-in-one/vagrant_variables.yml
+--- ceph-ansible/tests/functional/all-in-one/vagrant_variables.yml	2025-02-12 00:57:05.928961088 -0400
++++ ceph-ansible.new/tests/functional/all-in-one/vagrant_variables.yml	2025-02-12 00:57:29.037305679 -0400
+@@ -16,12 +16,12 @@
+ cluster_subnet: 192.168.18
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -32,8 +32,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/cephadm/vagrant_variables.yml ceph-ansible.new/tests/functional/cephadm/vagrant_variables.yml
+--- ceph-ansible/tests/functional/cephadm/vagrant_variables.yml	2025-02-12 00:57:05.929964892 -0400
++++ ceph-ansible.new/tests/functional/cephadm/vagrant_variables.yml	2025-02-12 00:57:29.050179788 -0400
+@@ -20,7 +20,7 @@
+ cluster_subnet: 192.168.31
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 2048
+ 
+ vagrant_box: centos/stream8
+diff -Naur ceph-ansible/tests/functional/collocation/container/group_vars/all ceph-ansible.new/tests/functional/collocation/container/group_vars/all
+--- ceph-ansible/tests/functional/collocation/container/group_vars/all	2025-02-12 00:57:05.929964892 -0400
++++ ceph-ansible.new/tests/functional/collocation/container/group_vars/all	2025-02-12 00:57:29.053150736 -0400
+@@ -4,8 +4,8 @@
+ docker: True
+ 
+ containerized_deployment: True
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ radosgw_num_instances: 2
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+diff -Naur ceph-ansible/tests/functional/collocation/container/vagrant_variables.yml ceph-ansible.new/tests/functional/collocation/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/collocation/container/vagrant_variables.yml	2025-02-12 00:57:05.929964892 -0400
++++ ceph-ansible.new/tests/functional/collocation/container/vagrant_variables.yml	2025-02-12 00:57:29.052160420 -0400
+@@ -20,12 +20,12 @@
+ cluster_subnet: 192.168.16
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -36,8 +36,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/collocation/group_vars/all ceph-ansible.new/tests/functional/collocation/group_vars/all
+--- ceph-ansible/tests/functional/collocation/group_vars/all	2025-02-12 00:57:05.930968696 -0400
++++ ceph-ansible.new/tests/functional/collocation/group_vars/all	2025-02-12 00:57:29.055131368 -0400
+@@ -2,8 +2,8 @@
+ containerized_deployment: False
+ ceph_origin: repository
+ ceph_repository: community
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+ public_network: "192.168.15.0/24"
+diff -Naur ceph-ansible/tests/functional/collocation/vagrant_variables.yml ceph-ansible.new/tests/functional/collocation/vagrant_variables.yml
+--- ceph-ansible/tests/functional/collocation/vagrant_variables.yml	2025-02-12 00:57:05.930968696 -0400
++++ ceph-ansible.new/tests/functional/collocation/vagrant_variables.yml	2025-02-12 00:57:29.051170104 -0400
+@@ -16,12 +16,12 @@
+ cluster_subnet: 192.168.16
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -32,8 +32,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/docker2podman/group_vars/all ceph-ansible.new/tests/functional/docker2podman/group_vars/all
+--- ceph-ansible/tests/functional/docker2podman/group_vars/all	2025-02-12 00:57:05.930968696 -0400
++++ ceph-ansible.new/tests/functional/docker2podman/group_vars/all	2025-02-12 00:57:29.060082949 -0400
+@@ -5,8 +5,8 @@
+ container_binary: docker
+ 
+ containerized_deployment: True
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+ public_network: "192.168.58.0/24"
+diff -Naur ceph-ansible/tests/functional/docker2podman/vagrant_variables.yml ceph-ansible.new/tests/functional/docker2podman/vagrant_variables.yml
+--- ceph-ansible/tests/functional/docker2podman/vagrant_variables.yml	2025-02-12 00:57:05.930968696 -0400
++++ ceph-ansible.new/tests/functional/docker2podman/vagrant_variables.yml	2025-02-12 00:57:29.058102317 -0400
+@@ -20,7 +20,7 @@
+ cluster_subnet: 192.168.59
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 2048
+ 
+ vagrant_box: centos/7
+diff -Naur ceph-ansible/tests/functional/external_clients/container/inventory/group_vars/all ceph-ansible.new/tests/functional/external_clients/container/inventory/group_vars/all
+--- ceph-ansible/tests/functional/external_clients/container/inventory/group_vars/all	2025-02-12 00:57:05.930968696 -0400
++++ ceph-ansible.new/tests/functional/external_clients/container/inventory/group_vars/all	2025-02-12 00:57:29.067015162 -0400
+@@ -4,8 +4,8 @@
+ docker: True
+ 
+ containerized_deployment: True
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ radosgw_num_instances: 2
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+diff -Naur ceph-ansible/tests/functional/external_clients/container/vagrant_variables.yml ceph-ansible.new/tests/functional/external_clients/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/external_clients/container/vagrant_variables.yml	2025-02-12 00:57:05.930968696 -0400
++++ ceph-ansible.new/tests/functional/external_clients/container/vagrant_variables.yml	2025-02-12 00:57:29.065034529 -0400
+@@ -20,12 +20,12 @@
+ cluster_subnet: 192.168.32
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -36,8 +36,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/external_clients/inventory/group_vars/all ceph-ansible.new/tests/functional/external_clients/inventory/group_vars/all
+--- ceph-ansible/tests/functional/external_clients/inventory/group_vars/all	2025-02-12 00:57:05.930968696 -0400
++++ ceph-ansible.new/tests/functional/external_clients/inventory/group_vars/all	2025-02-12 00:57:29.068005478 -0400
+@@ -2,8 +2,8 @@
+ containerized_deployment: False
+ ceph_origin: repository
+ ceph_repository: community
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+ openstack_config: True
+diff -Naur ceph-ansible/tests/functional/external_clients/vagrant_variables.yml ceph-ansible.new/tests/functional/external_clients/vagrant_variables.yml
+--- ceph-ansible/tests/functional/external_clients/vagrant_variables.yml	2025-02-12 00:57:05.930968696 -0400
++++ ceph-ansible.new/tests/functional/external_clients/vagrant_variables.yml	2025-02-12 00:57:29.065034529 -0400
+@@ -16,12 +16,12 @@
+ cluster_subnet: 192.168.32
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -32,8 +32,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/filestore-to-bluestore/container/group_vars/all ceph-ansible.new/tests/functional/filestore-to-bluestore/container/group_vars/all
+--- ceph-ansible/tests/functional/filestore-to-bluestore/container/group_vars/all	2025-02-12 00:57:05.930968696 -0400
++++ ceph-ansible.new/tests/functional/filestore-to-bluestore/container/group_vars/all	2025-02-12 00:57:29.071966742 -0400
+@@ -8,7 +8,7 @@
+ ceph_repository: community
+ public_network: "192.168.43.0/24"
+ cluster_network: "192.168.44.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 2048
+ copy_admin_key: true
+ containerized_deployment: true
+diff -Naur ceph-ansible/tests/functional/filestore-to-bluestore/container/vagrant_variables.yml ceph-ansible.new/tests/functional/filestore-to-bluestore/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/filestore-to-bluestore/container/vagrant_variables.yml	2025-02-12 00:57:05.930968696 -0400
++++ ceph-ansible.new/tests/functional/filestore-to-bluestore/container/vagrant_variables.yml	2025-02-12 00:57:29.071966742 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.44
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/filestore-to-bluestore/group_vars/all ceph-ansible.new/tests/functional/filestore-to-bluestore/group_vars/all
+--- ceph-ansible/tests/functional/filestore-to-bluestore/group_vars/all	2025-02-12 00:57:05.931972499 -0400
++++ ceph-ansible.new/tests/functional/filestore-to-bluestore/group_vars/all	2025-02-12 00:57:29.070976426 -0400
+@@ -4,7 +4,7 @@
+ ceph_repository: community
+ public_network: "192.168.41.0/24"
+ cluster_network: "192.168.42.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 2048
+ copy_admin_key: true
+ # test-volume is created by tests/functional/lvm_setup.yml from /dev/sdb
+diff -Naur ceph-ansible/tests/functional/filestore-to-bluestore/vagrant_variables.yml ceph-ansible.new/tests/functional/filestore-to-bluestore/vagrant_variables.yml
+--- ceph-ansible/tests/functional/filestore-to-bluestore/vagrant_variables.yml	2025-02-12 00:57:05.931972499 -0400
++++ ceph-ansible.new/tests/functional/filestore-to-bluestore/vagrant_variables.yml	2025-02-12 00:57:29.070976426 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.42
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/infra_lv_create/vagrant_variables.yml ceph-ansible.new/tests/functional/infra_lv_create/vagrant_variables.yml
+--- ceph-ansible/tests/functional/infra_lv_create/vagrant_variables.yml	2025-02-12 00:57:05.931972499 -0400
++++ ceph-ansible.new/tests/functional/infra_lv_create/vagrant_variables.yml	2025-02-12 00:57:28.979867345 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.40
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/lvm-auto-discovery/container/group_vars/all ceph-ansible.new/tests/functional/lvm-auto-discovery/container/group_vars/all
+--- ceph-ansible/tests/functional/lvm-auto-discovery/container/group_vars/all	2025-02-12 00:57:05.931972499 -0400
++++ ceph-ansible.new/tests/functional/lvm-auto-discovery/container/group_vars/all	2025-02-12 00:57:28.992741454 -0400
+@@ -10,8 +10,8 @@
+ cluster: ceph
+ public_network: "192.168.39.0/24"
+ cluster_network: "192.168.40.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ osd_objectstore: "bluestore"
+ crush_device_class: test
+diff -Naur ceph-ansible/tests/functional/lvm-auto-discovery/container/vagrant_variables.yml ceph-ansible.new/tests/functional/lvm-auto-discovery/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/lvm-auto-discovery/container/vagrant_variables.yml	2025-02-12 00:57:05.931972499 -0400
++++ ceph-ansible.new/tests/functional/lvm-auto-discovery/container/vagrant_variables.yml	2025-02-12 00:57:28.992741454 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.40
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 2048
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/lvm-auto-discovery/group_vars/all ceph-ansible.new/tests/functional/lvm-auto-discovery/group_vars/all
+--- ceph-ansible/tests/functional/lvm-auto-discovery/group_vars/all	2025-02-12 00:57:05.931972499 -0400
++++ ceph-ansible.new/tests/functional/lvm-auto-discovery/group_vars/all	2025-02-12 00:57:28.992741454 -0400
+@@ -5,8 +5,8 @@
+ cluster: ceph
+ public_network: "192.168.39.0/24"
+ cluster_network: "192.168.40.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ osd_objectstore: "bluestore"
+ crush_device_class: test
+ copy_admin_key: true
+diff -Naur ceph-ansible/tests/functional/lvm-auto-discovery/vagrant_variables.yml ceph-ansible.new/tests/functional/lvm-auto-discovery/vagrant_variables.yml
+--- ceph-ansible/tests/functional/lvm-auto-discovery/vagrant_variables.yml	2025-02-12 00:57:05.931972499 -0400
++++ ceph-ansible.new/tests/functional/lvm-auto-discovery/vagrant_variables.yml	2025-02-12 00:57:28.991751138 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.40
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/lvm-batch/container/group_vars/all ceph-ansible.new/tests/functional/lvm-batch/container/group_vars/all
+--- ceph-ansible/tests/functional/lvm-batch/container/group_vars/all	2025-02-12 00:57:05.931972499 -0400
++++ ceph-ansible.new/tests/functional/lvm-batch/container/group_vars/all	2025-02-12 00:57:29.005615563 -0400
+@@ -10,8 +10,8 @@
+ cluster: ceph
+ public_network: "192.168.39.0/24"
+ cluster_network: "192.168.40.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 2048
+ osd_objectstore: "bluestore"
+ crush_device_class: test
+diff -Naur ceph-ansible/tests/functional/lvm-batch/container/vagrant_variables.yml ceph-ansible.new/tests/functional/lvm-batch/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/lvm-batch/container/vagrant_variables.yml	2025-02-12 00:57:05.931972499 -0400
++++ ceph-ansible.new/tests/functional/lvm-batch/container/vagrant_variables.yml	2025-02-12 00:57:29.005615563 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.40
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/lvm-batch/group_vars/all ceph-ansible.new/tests/functional/lvm-batch/group_vars/all
+--- ceph-ansible/tests/functional/lvm-batch/group_vars/all	2025-02-12 00:57:05.931972499 -0400
++++ ceph-ansible.new/tests/functional/lvm-batch/group_vars/all	2025-02-12 00:57:29.006605880 -0400
+@@ -5,8 +5,8 @@
+ cluster: ceph
+ public_network: "192.168.39.0/24"
+ cluster_network: "192.168.40.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ osd_objectstore: "bluestore"
+ crush_device_class: test
+ copy_admin_key: true
+diff -Naur ceph-ansible/tests/functional/lvm-batch/vagrant_variables.yml ceph-ansible.new/tests/functional/lvm-batch/vagrant_variables.yml
+--- ceph-ansible/tests/functional/lvm-batch/vagrant_variables.yml	2025-02-12 00:57:05.932976303 -0400
++++ ceph-ansible.new/tests/functional/lvm-batch/vagrant_variables.yml	2025-02-12 00:57:29.003634931 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.40
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/lvm-osds/container/group_vars/all ceph-ansible.new/tests/functional/lvm-osds/container/group_vars/all
+--- ceph-ansible/tests/functional/lvm-osds/container/group_vars/all	2025-02-12 00:57:05.932976303 -0400
++++ ceph-ansible.new/tests/functional/lvm-osds/container/group_vars/all	2025-02-12 00:57:29.018489673 -0400
+@@ -8,7 +8,7 @@
+ ceph_repository: community
+ public_network: "192.168.39.0/24"
+ cluster_network: "192.168.40.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ copy_admin_key: true
+ containerized_deployment: true
+diff -Naur ceph-ansible/tests/functional/lvm-osds/container/vagrant_variables.yml ceph-ansible.new/tests/functional/lvm-osds/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/lvm-osds/container/vagrant_variables.yml	2025-02-12 00:57:05.932976303 -0400
++++ ceph-ansible.new/tests/functional/lvm-osds/container/vagrant_variables.yml	2025-02-12 00:57:29.017499357 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.40
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/lvm-osds/group_vars/all ceph-ansible.new/tests/functional/lvm-osds/group_vars/all
+--- ceph-ansible/tests/functional/lvm-osds/group_vars/all	2025-02-12 00:57:05.932976303 -0400
++++ ceph-ansible.new/tests/functional/lvm-osds/group_vars/all	2025-02-12 00:57:29.018489673 -0400
+@@ -4,7 +4,7 @@
+ ceph_repository: community
+ public_network: "192.168.39.0/24"
+ cluster_network: "192.168.40.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ copy_admin_key: true
+ # test-volume is created by tests/functional/lvm_setup.yml from /dev/sdb
+diff -Naur ceph-ansible/tests/functional/lvm-osds/vagrant_variables.yml ceph-ansible.new/tests/functional/lvm-osds/vagrant_variables.yml
+--- ceph-ansible/tests/functional/lvm-osds/vagrant_variables.yml	2025-02-12 00:57:05.932976303 -0400
++++ ceph-ansible.new/tests/functional/lvm-osds/vagrant_variables.yml	2025-02-12 00:57:29.016509041 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.40
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/migrate_ceph_disk_to_ceph_volume/vagrant_variables.yml ceph-ansible.new/tests/functional/migrate_ceph_disk_to_ceph_volume/vagrant_variables.yml
+--- ceph-ansible/tests/functional/migrate_ceph_disk_to_ceph_volume/vagrant_variables.yml	2025-02-12 00:57:05.932976303 -0400
++++ ceph-ansible.new/tests/functional/migrate_ceph_disk_to_ceph_volume/vagrant_variables.yml	2025-02-12 00:57:29.021460621 -0400
+@@ -25,16 +25,16 @@
+ cluster_subnet: 192.168.2
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 512
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -45,8 +45,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/ooo-collocation/vagrant_variables.yml ceph-ansible.new/tests/functional/ooo-collocation/vagrant_variables.yml
+--- ceph-ansible/tests/functional/ooo-collocation/vagrant_variables.yml	2025-02-12 00:57:05.933980106 -0400
++++ ceph-ansible.new/tests/functional/ooo-collocation/vagrant_variables.yml	2025-02-12 00:57:29.021460621 -0400
+@@ -20,12 +20,12 @@
+ cluster_subnet: 192.168.96
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -36,8 +36,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/podman/group_vars/all ceph-ansible.new/tests/functional/podman/group_vars/all
+--- ceph-ansible/tests/functional/podman/group_vars/all	2025-02-12 00:57:05.933980106 -0400
++++ ceph-ansible.new/tests/functional/podman/group_vars/all	2025-02-12 00:57:29.025421886 -0400
+@@ -4,8 +4,8 @@
+ docker: True
+ 
+ containerized_deployment: True
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+ public_network: "192.168.30.0/24"
+diff -Naur ceph-ansible/tests/functional/podman/vagrant_variables.yml ceph-ansible.new/tests/functional/podman/vagrant_variables.yml
+--- ceph-ansible/tests/functional/podman/vagrant_variables.yml	2025-02-12 00:57:05.933980106 -0400
++++ ceph-ansible.new/tests/functional/podman/vagrant_variables.yml	2025-02-12 00:57:29.025421886 -0400
+@@ -20,7 +20,7 @@
+ cluster_subnet: 192.168.31
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 2048
+ 
+ vagrant_box: centos/atomic-host
+diff -Naur ceph-ansible/tests/functional/rgw-multisite/container/group_vars/all ceph-ansible.new/tests/functional/rgw-multisite/container/group_vars/all
+--- ceph-ansible/tests/functional/rgw-multisite/container/group_vars/all	2025-02-12 00:57:05.933980106 -0400
++++ ceph-ansible.new/tests/functional/rgw-multisite/container/group_vars/all	2025-02-12 00:57:29.028392834 -0400
+@@ -6,8 +6,8 @@
+ cluster: ceph
+ public_network: "192.168.105.0/24"
+ cluster_network: "192.168.106.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ osd_objectstore: "bluestore"
+ copy_admin_key: true
+diff -Naur ceph-ansible/tests/functional/rgw-multisite/container/secondary/group_vars/all ceph-ansible.new/tests/functional/rgw-multisite/container/secondary/group_vars/all
+--- ceph-ansible/tests/functional/rgw-multisite/container/secondary/group_vars/all	2025-02-12 00:57:05.934983910 -0400
++++ ceph-ansible.new/tests/functional/rgw-multisite/container/secondary/group_vars/all	2025-02-12 00:57:29.030373466 -0400
+@@ -6,8 +6,8 @@
+ cluster: ceph
+ public_network: "192.168.107.0/24"
+ cluster_network: "192.168.108.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ osd_objectstore: "bluestore"
+ copy_admin_key: true
+diff -Naur ceph-ansible/tests/functional/rgw-multisite/container/secondary/vagrant_variables.yml ceph-ansible.new/tests/functional/rgw-multisite/container/secondary/vagrant_variables.yml
+--- ceph-ansible/tests/functional/rgw-multisite/container/secondary/vagrant_variables.yml	2025-02-12 00:57:05.934983910 -0400
++++ ceph-ansible.new/tests/functional/rgw-multisite/container/secondary/vagrant_variables.yml	2025-02-12 00:57:29.030373466 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.108
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/rgw-multisite/container/vagrant_variables.yml ceph-ansible.new/tests/functional/rgw-multisite/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/rgw-multisite/container/vagrant_variables.yml	2025-02-12 00:57:05.934983910 -0400
++++ ceph-ansible.new/tests/functional/rgw-multisite/container/vagrant_variables.yml	2025-02-12 00:57:29.027402518 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.106
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/rgw-multisite/group_vars/all ceph-ansible.new/tests/functional/rgw-multisite/group_vars/all
+--- ceph-ansible/tests/functional/rgw-multisite/group_vars/all	2025-02-12 00:57:05.934983910 -0400
++++ ceph-ansible.new/tests/functional/rgw-multisite/group_vars/all	2025-02-12 00:57:29.031363782 -0400
+@@ -4,8 +4,8 @@
+ cluster: ceph
+ public_network: "192.168.101.0/24"
+ cluster_network: "192.168.102.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ osd_objectstore: "bluestore"
+ copy_admin_key: true
+diff -Naur ceph-ansible/tests/functional/rgw-multisite/secondary/group_vars/all ceph-ansible.new/tests/functional/rgw-multisite/secondary/group_vars/all
+--- ceph-ansible/tests/functional/rgw-multisite/secondary/group_vars/all	2025-02-12 00:57:05.934983910 -0400
++++ ceph-ansible.new/tests/functional/rgw-multisite/secondary/group_vars/all	2025-02-12 00:57:29.033344414 -0400
+@@ -4,8 +4,8 @@
+ cluster: ceph
+ public_network: "192.168.103.0/24"
+ cluster_network: "192.168.104.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ journal_size: 100
+ osd_objectstore: "bluestore"
+ copy_admin_key: true
+diff -Naur ceph-ansible/tests/functional/rgw-multisite/secondary/vagrant_variables.yml ceph-ansible.new/tests/functional/rgw-multisite/secondary/vagrant_variables.yml
+--- ceph-ansible/tests/functional/rgw-multisite/secondary/vagrant_variables.yml	2025-02-12 00:57:05.934983910 -0400
++++ ceph-ansible.new/tests/functional/rgw-multisite/secondary/vagrant_variables.yml	2025-02-12 00:57:29.032354098 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.104
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/rgw-multisite/vagrant_variables.yml ceph-ansible.new/tests/functional/rgw-multisite/vagrant_variables.yml
+--- ceph-ansible/tests/functional/rgw-multisite/vagrant_variables.yml	2025-02-12 00:57:05.934983910 -0400
++++ ceph-ansible.new/tests/functional/rgw-multisite/vagrant_variables.yml	2025-02-12 00:57:29.027402518 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.102
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/setup.yml ceph-ansible.new/tests/functional/setup.yml
+--- ceph-ansible/tests/functional/setup.yml	2025-02-12 00:57:05.934983910 -0400
++++ ceph-ansible.new/tests/functional/setup.yml	2025-02-12 00:57:28.980857661 -0400
+@@ -68,7 +68,7 @@
+             option: metalink
+             state: absent
+       when:
+-        - ansible_facts['distribution'] == 'CentOS'
++        - ansible_facts['distribution'] == 'Rocky'
+         - ansible_facts['distribution_major_version'] | int == 7
+         - not is_atomic | bool
+ 
+diff -Naur ceph-ansible/tests/functional/shrink_mds/container/group_vars/all ceph-ansible.new/tests/functional/shrink_mds/container/group_vars/all
+--- ceph-ansible/tests/functional/shrink_mds/container/group_vars/all	2025-02-12 00:57:05.934983910 -0400
++++ ceph-ansible.new/tests/functional/shrink_mds/container/group_vars/all	2025-02-12 00:57:29.048199156 -0400
+@@ -4,7 +4,7 @@
+ docker: True
+ 
+ containerized_deployment: True
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+ public_network: "192.168.79.0/24"
+diff -Naur ceph-ansible/tests/functional/shrink_mds/container/vagrant_variables.yml ceph-ansible.new/tests/functional/shrink_mds/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/shrink_mds/container/vagrant_variables.yml	2025-02-12 00:57:05.934983910 -0400
++++ ceph-ansible.new/tests/functional/shrink_mds/container/vagrant_variables.yml	2025-02-12 00:57:29.047208840 -0400
+@@ -20,12 +20,12 @@
+ cluster_subnet: 192.168.80
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -36,8 +36,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/shrink_mds/vagrant_variables.yml ceph-ansible.new/tests/functional/shrink_mds/vagrant_variables.yml
+--- ceph-ansible/tests/functional/shrink_mds/vagrant_variables.yml	2025-02-12 00:57:05.935987713 -0400
++++ ceph-ansible.new/tests/functional/shrink_mds/vagrant_variables.yml	2025-02-12 00:57:29.046218523 -0400
+@@ -20,16 +20,16 @@
+ cluster_subnet: 192.168.78
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For Xenial use disks: [ '/dev/sdb', '/dev/sdc' ]
+-# For CentOS7 use disks: [ '/dev/sda', '/dev/sdb' ]
++# For Rocky7 use disks: [ '/dev/sda', '/dev/sdb' ]
+ disks: [ '/dev/sdb', '/dev/sdc' ]
+ 
+ # VAGRANT BOX
+@@ -40,9 +40,9 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial or bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+ # openSUSE: opensuse/openSUSE-42.3-x86_64
+-# libvirt CentOS: centos/7
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/shrink_mgr/container/group_vars/all ceph-ansible.new/tests/functional/shrink_mgr/container/group_vars/all
+--- ceph-ansible/tests/functional/shrink_mgr/container/group_vars/all	2025-02-12 00:57:05.935987713 -0400
++++ ceph-ansible.new/tests/functional/shrink_mgr/container/group_vars/all	2025-02-12 00:57:29.056121685 -0400
+@@ -4,7 +4,7 @@
+ docker: True
+ 
+ containerized_deployment: True
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+ public_network: "192.168.83.0/24"
+diff -Naur ceph-ansible/tests/functional/shrink_mgr/container/vagrant_variables.yml ceph-ansible.new/tests/functional/shrink_mgr/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/shrink_mgr/container/vagrant_variables.yml	2025-02-12 00:57:05.935987713 -0400
++++ ceph-ansible.new/tests/functional/shrink_mgr/container/vagrant_variables.yml	2025-02-12 00:57:29.055131368 -0400
+@@ -20,12 +20,12 @@
+ cluster_subnet: 192.168.84
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -36,8 +36,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/shrink_mgr/vagrant_variables.yml ceph-ansible.new/tests/functional/shrink_mgr/vagrant_variables.yml
+--- ceph-ansible/tests/functional/shrink_mgr/vagrant_variables.yml	2025-02-12 00:57:05.935987713 -0400
++++ ceph-ansible.new/tests/functional/shrink_mgr/vagrant_variables.yml	2025-02-12 00:57:29.055131368 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.82
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/shrink_mon/container/group_vars/all ceph-ansible.new/tests/functional/shrink_mon/container/group_vars/all
+--- ceph-ansible/tests/functional/shrink_mon/container/group_vars/all	2025-02-12 00:57:05.935987713 -0400
++++ ceph-ansible.new/tests/functional/shrink_mon/container/group_vars/all	2025-02-12 00:57:29.062063581 -0400
+@@ -4,7 +4,7 @@
+ docker: True
+ 
+ containerized_deployment: True
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+ public_network: "192.168.17.0/24"
+diff -Naur ceph-ansible/tests/functional/shrink_mon/container/vagrant_variables.yml ceph-ansible.new/tests/functional/shrink_mon/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/shrink_mon/container/vagrant_variables.yml	2025-02-12 00:57:05.935987713 -0400
++++ ceph-ansible.new/tests/functional/shrink_mon/container/vagrant_variables.yml	2025-02-12 00:57:29.062063581 -0400
+@@ -20,12 +20,12 @@
+ cluster_subnet: 192.168.18
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -36,8 +36,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/shrink_mon/hosts ceph-ansible.new/tests/functional/shrink_mon/hosts
+--- ceph-ansible/tests/functional/shrink_mon/hosts	2025-02-12 00:57:05.936991517 -0400
++++ ceph-ansible.new/tests/functional/shrink_mon/hosts	2025-02-12 00:57:29.060082949 -0400
+@@ -1,6 +1,6 @@
+ [mons]
+ mon0 monitor_address=192.168.1.10
+-mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ mon2 monitor_address=192.168.1.12
+ 
+ [osds]
+diff -Naur ceph-ansible/tests/functional/shrink_mon/hosts-switch-to-containers ceph-ansible.new/tests/functional/shrink_mon/hosts-switch-to-containers
+--- ceph-ansible/tests/functional/shrink_mon/hosts-switch-to-containers	2025-02-12 00:57:05.936991517 -0400
++++ ceph-ansible.new/tests/functional/shrink_mon/hosts-switch-to-containers	2025-02-12 00:57:29.061073265 -0400
+@@ -3,7 +3,7 @@
+ 
+ [mons]
+ mon0 monitor_address=192.168.1.10
+-mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ mon2 monitor_address=192.168.1.12
+ 
+ [osds]
+diff -Naur ceph-ansible/tests/functional/shrink_mon/hosts-ubuntu ceph-ansible.new/tests/functional/shrink_mon/hosts-ubuntu
+--- ceph-ansible/tests/functional/shrink_mon/hosts-ubuntu	2025-02-12 00:57:05.936991517 -0400
++++ ceph-ansible.new/tests/functional/shrink_mon/hosts-ubuntu	2025-02-12 00:57:29.061073265 -0400
+@@ -1,6 +1,6 @@
+ [mons]
+ mon0 monitor_address=192.168.1.10
+-mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ mon2 monitor_address=192.168.1.12
+ 
+ [osds]
+diff -Naur ceph-ansible/tests/functional/shrink_mon/vagrant_variables.yml ceph-ansible.new/tests/functional/shrink_mon/vagrant_variables.yml
+--- ceph-ansible/tests/functional/shrink_mon/vagrant_variables.yml	2025-02-12 00:57:05.936991517 -0400
++++ ceph-ansible.new/tests/functional/shrink_mon/vagrant_variables.yml	2025-02-12 00:57:29.061073265 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.2
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/shrink_osd/container/group_vars/all ceph-ansible.new/tests/functional/shrink_osd/container/group_vars/all
+--- ceph-ansible/tests/functional/shrink_osd/container/group_vars/all	2025-02-12 00:57:05.936991517 -0400
++++ ceph-ansible.new/tests/functional/shrink_osd/container/group_vars/all	2025-02-12 00:57:29.069986110 -0400
+@@ -4,7 +4,7 @@
+ docker: True
+ 
+ containerized_deployment: True
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+ public_network: "192.168.73.0/24"
+diff -Naur ceph-ansible/tests/functional/shrink_osd/container/vagrant_variables.yml ceph-ansible.new/tests/functional/shrink_osd/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/shrink_osd/container/vagrant_variables.yml	2025-02-12 00:57:05.936991517 -0400
++++ ceph-ansible.new/tests/functional/shrink_osd/container/vagrant_variables.yml	2025-02-12 00:57:29.068995794 -0400
+@@ -20,12 +20,12 @@
+ cluster_subnet: 192.168.74
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -36,8 +36,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/shrink_osd/vagrant_variables.yml ceph-ansible.new/tests/functional/shrink_osd/vagrant_variables.yml
+--- ceph-ansible/tests/functional/shrink_osd/vagrant_variables.yml	2025-02-12 00:57:05.936991517 -0400
++++ ceph-ansible.new/tests/functional/shrink_osd/vagrant_variables.yml	2025-02-12 00:57:29.068995794 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.72
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/shrink_rbdmirror/container/group_vars/all ceph-ansible.new/tests/functional/shrink_rbdmirror/container/group_vars/all
+--- ceph-ansible/tests/functional/shrink_rbdmirror/container/group_vars/all	2025-02-12 00:57:05.936991517 -0400
++++ ceph-ansible.new/tests/functional/shrink_rbdmirror/container/group_vars/all	2025-02-12 00:57:29.073947374 -0400
+@@ -5,7 +5,7 @@
+ public_network: "192.168.87.0/24"
+ cluster_network: "192.168.88.0/24"
+ containerized_deployment: True
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+ ceph_conf_overrides:
+diff -Naur ceph-ansible/tests/functional/shrink_rbdmirror/container/vagrant_variables.yml ceph-ansible.new/tests/functional/shrink_rbdmirror/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/shrink_rbdmirror/container/vagrant_variables.yml	2025-02-12 00:57:05.937995321 -0400
++++ ceph-ansible.new/tests/functional/shrink_rbdmirror/container/vagrant_variables.yml	2025-02-12 00:57:29.073947374 -0400
+@@ -20,12 +20,12 @@
+ cluster_subnet: 192.168.88
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -36,8 +36,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/shrink_rbdmirror/vagrant_variables.yml ceph-ansible.new/tests/functional/shrink_rbdmirror/vagrant_variables.yml
+--- ceph-ansible/tests/functional/shrink_rbdmirror/vagrant_variables.yml	2025-02-12 00:57:05.937995321 -0400
++++ ceph-ansible.new/tests/functional/shrink_rbdmirror/vagrant_variables.yml	2025-02-12 00:57:29.072957058 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.86
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/shrink_rgw/container/group_vars/all ceph-ansible.new/tests/functional/shrink_rgw/container/group_vars/all
+--- ceph-ansible/tests/functional/shrink_rgw/container/group_vars/all	2025-02-12 00:57:05.937995321 -0400
++++ ceph-ansible.new/tests/functional/shrink_rgw/container/group_vars/all	2025-02-12 00:57:28.984818925 -0400
+@@ -6,8 +6,8 @@
+ containerized_deployment: True
+ public_network: "192.168.91.0/24"
+ cluster_network: "192.168.92.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ ceph_docker_on_openstack: False
+ ceph_conf_overrides:
+diff -Naur ceph-ansible/tests/functional/shrink_rgw/container/vagrant_variables.yml ceph-ansible.new/tests/functional/shrink_rgw/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/shrink_rgw/container/vagrant_variables.yml	2025-02-12 00:57:05.937995321 -0400
++++ ceph-ansible.new/tests/functional/shrink_rgw/container/vagrant_variables.yml	2025-02-12 00:57:28.984818925 -0400
+@@ -20,12 +20,12 @@
+ cluster_subnet: 192.168.92
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -36,8 +36,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/shrink_rgw/group_vars/all ceph-ansible.new/tests/functional/shrink_rgw/group_vars/all
+--- ceph-ansible/tests/functional/shrink_rgw/group_vars/all	2025-02-12 00:57:05.937995321 -0400
++++ ceph-ansible.new/tests/functional/shrink_rgw/group_vars/all	2025-02-12 00:57:28.986799558 -0400
+@@ -3,8 +3,8 @@
+ ceph_repository: dev
+ public_network: "192.168.89.0/24"
+ cluster_network: "192.168.90.0/24"
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ osd_objectstore: "bluestore"
+ copy_admin_key: true
+ ceph_conf_overrides:
+diff -Naur ceph-ansible/tests/functional/shrink_rgw/vagrant_variables.yml ceph-ansible.new/tests/functional/shrink_rgw/vagrant_variables.yml
+--- ceph-ansible/tests/functional/shrink_rgw/vagrant_variables.yml	2025-02-12 00:57:05.937995321 -0400
++++ ceph-ansible.new/tests/functional/shrink_rgw/vagrant_variables.yml	2025-02-12 00:57:28.982838293 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.90
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/subset_update/container/group_vars/all ceph-ansible.new/tests/functional/subset_update/container/group_vars/all
+--- ceph-ansible/tests/functional/subset_update/container/group_vars/all	2025-02-12 00:57:05.937995321 -0400
++++ ceph-ansible.new/tests/functional/subset_update/container/group_vars/all	2025-02-12 00:57:28.995712403 -0400
+@@ -4,8 +4,8 @@
+ docker: True
+ 
+ containerized_deployment: True
+-monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++monitor_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_mon_docker_subnet: "{{ public_network }}"
+ public_network: "192.168.5.0/24"
+ cluster_network: "192.168.6.0/24"
+diff -Naur ceph-ansible/tests/functional/subset_update/container/hosts ceph-ansible.new/tests/functional/subset_update/container/hosts
+--- ceph-ansible/tests/functional/subset_update/container/hosts	2025-02-12 00:57:05.938999124 -0400
++++ ceph-ansible.new/tests/functional/subset_update/container/hosts	2025-02-12 00:57:28.994722086 -0400
+@@ -1,6 +1,6 @@
+ [mons]
+ mon0 monitor_address=192.168.5.10
+-mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ mon2 monitor_address=192.168.5.12
+ 
+ [mgrs]
+diff -Naur ceph-ansible/tests/functional/subset_update/container/vagrant_variables.yml ceph-ansible.new/tests/functional/subset_update/container/vagrant_variables.yml
+--- ceph-ansible/tests/functional/subset_update/container/vagrant_variables.yml	2025-02-12 00:57:05.938999124 -0400
++++ ceph-ansible.new/tests/functional/subset_update/container/vagrant_variables.yml	2025-02-12 00:57:28.994722086 -0400
+@@ -20,12 +20,12 @@
+ cluster_subnet: 192.168.6
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sda', '/dev/sdb' ]"
+ 
+ # VAGRANT BOX
+@@ -36,8 +36,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/functional/subset_update/group_vars/all ceph-ansible.new/tests/functional/subset_update/group_vars/all
+--- ceph-ansible/tests/functional/subset_update/group_vars/all	2025-02-12 00:57:05.938999124 -0400
++++ ceph-ansible.new/tests/functional/subset_update/group_vars/all	2025-02-12 00:57:28.997693035 -0400
+@@ -3,7 +3,7 @@
+ ceph_repository: community
+ public_network: "192.168.3.0/24"
+ cluster_network: "192.168.4.0/24"
+-radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++radosgw_interface: "{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ ceph_conf_overrides:
+   global:
+     auth_allow_insecure_global_id_reclaim: false
+diff -Naur ceph-ansible/tests/functional/subset_update/hosts ceph-ansible.new/tests/functional/subset_update/hosts
+--- ceph-ansible/tests/functional/subset_update/hosts	2025-02-12 00:57:05.938999124 -0400
++++ ceph-ansible.new/tests/functional/subset_update/hosts	2025-02-12 00:57:28.993731770 -0400
+@@ -1,6 +1,6 @@
+ [mons]
+ mon0 monitor_address=192.168.3.10
+-mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'CentOS' else 'ens6' }}"
++mon1 monitor_interface="{{ 'eth1' if ansible_facts['distribution'] == 'Rocky' else 'ens6' }}"
+ mon2 monitor_address=192.168.3.12
+ 
+ [mgrs]
+diff -Naur ceph-ansible/tests/functional/subset_update/vagrant_variables.yml ceph-ansible.new/tests/functional/subset_update/vagrant_variables.yml
+--- ceph-ansible/tests/functional/subset_update/vagrant_variables.yml	2025-02-12 00:57:05.938999124 -0400
++++ ceph-ansible.new/tests/functional/subset_update/vagrant_variables.yml	2025-02-12 00:57:28.993731770 -0400
+@@ -24,16 +24,16 @@
+ cluster_subnet: 192.168.4
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For libvirt use disks: "[ '/dev/vdb', '/dev/vdc' ]"
+-# For CentOS7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
++# For Rocky7 use disks: "[ '/dev/sda', '/dev/sdb' ]"
+ disks: "[ '/dev/sdb', '/dev/sdc' ]"
+ 
+ # VAGRANT BOX
+@@ -44,8 +44,8 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+-# libvirt CentOS: centos/7
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
+diff -Naur ceph-ansible/tests/scripts/vagrant_up.sh ceph-ansible.new/tests/scripts/vagrant_up.sh
+--- ceph-ansible/tests/scripts/vagrant_up.sh	2025-02-12 00:57:05.941006731 -0400
++++ ceph-ansible.new/tests/scripts/vagrant_up.sh	2025-02-12 00:57:29.081869903 -0400
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+ 
+ vagrant box remove --force --provider libvirt --box-version 0 centos/stream8 || true
+-vagrant box add --provider libvirt --name centos/stream8 https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-Vagrant-8-20220125.1.x86_64.vagrant-libvirt.box || true
++vagrant box add --provider libvirt --name centos/stream8 https://cloud.centos.org/centos/8-stream/x86_64/images/Rocky-Stream-Vagrant-8-20220125.1.x86_64.vagrant-libvirt.box || true
+ 
+ retries=0
+ until [ $retries -ge 5 ]
+diff -Naur ceph-ansible/vagrant_variables.yml.sample ceph-ansible.new/vagrant_variables.yml.sample
+--- ceph-ansible/vagrant_variables.yml.sample	2025-02-12 00:57:05.942010535 -0400
++++ ceph-ansible.new/vagrant_variables.yml.sample	2025-02-12 00:57:29.199717519 -0400
+@@ -20,16 +20,16 @@
+ cluster_subnet: 192.168.43
+ 
+ # MEMORY
+-# set 1024 for CentOS
++# set 1024 for Rocky
+ memory: 1024
+ 
+ # Ethernet interface name
+-# use eth1 for libvirt and ubuntu precise, enp0s8 for CentOS and ubuntu xenial
++# use eth1 for libvirt and ubuntu precise, enp0s8 for Rocky and ubuntu xenial
+ eth: 'eth1'
+ 
+ # Disks
+ # For Xenial use disks: [ '/dev/sdb', '/dev/sdc' ]
+-# For CentOS7 use disks: [ '/dev/sda', '/dev/sdb' ]
++# For Rocky7 use disks: [ '/dev/sda', '/dev/sdb' ]
+ disks: [ '/dev/sdb', '/dev/sdc' ]
+ 
+ # VAGRANT BOX
+@@ -40,9 +40,9 @@
+ # * ceph/ubuntu-xenial
+ #
+ # Ubuntu: ceph/ubuntu-xenial or bento/ubuntu-16.04 or ubuntu/trusty64 or ubuntu/wily64
+-# CentOS: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
++# Rocky: bento/centos-7.1 or puppetlabs/centos-7.0-64-puppet
+ # openSUSE: opensuse/openSUSE-42.3-x86_64
+-# libvirt CentOS: centos/7
++# libvirt Rocky: centos/7
+ # parallels Ubuntu: parallels/ubuntu-14.04
+ # Debian: deb/jessie-amd64 - be careful the storage controller is named 'SATA Controller'
+ # For more boxes have a look at:
