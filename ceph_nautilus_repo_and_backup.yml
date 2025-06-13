@@ -1,0 +1,71 @@
+---
+- name: Prepare Ceph Nautilus migration on storage nodes
+  hosts: storage  # Replace with your inventory group or host pattern
+  become: yes
+  tasks:
+    # Install Ceph Nautilus repository
+    - name: Install centos-release-ceph-nautilus
+      ansible.builtin.yum:
+        name: centos-release-ceph-nautilus
+        state: present
+
+    - name: Install centos-release-ceph-nautilus package
+      yum:
+        name: centos-release-ceph-nautilus
+        state: present
+
+    - name: Update CentOS repo files to use vault and uncomment baseurl
+      find:
+        paths: /etc/yum.repos.d
+        patterns: "CentOS*.repo"
+      register: repo_files
+
+    - name: Modify repo files
+      lineinfile:
+        path: "{{ item.path }}"
+        regexp: '^mirrorlist'
+        state: absent
+      loop: "{{ repo_files.files }}"
+
+    - name: Uncomment and modify baseurl lines to use vault
+      replace:
+        path: "{{ item.path }}"
+        regexp: '^#baseurl=(.*)/mirror(.*)$'
+        replace: 'baseurl=\1/vault\2'
+      loop: "{{ repo_files.files }}"
+
+    # Install Ceph packages
+    - name: Install Ceph packages
+      ansible.builtin.yum:
+        name:
+          - ceph-common
+          - ceph-osd
+        state: present
+
+    # Create backup of /etc/ceph* and /etc/kolla/ceph*
+    - name: Create backup directory for /etc files
+      ansible.builtin.file:
+        path: "/etc/kolla/ceph.backup.{{ ansible_date_time.date }}"
+        state: directory
+
+    - name: Backup /etc/ceph* and /etc/kolla/ceph*
+      ansible.builtin.shell: |
+        cp -rfa /etc/kolla/ceph-* "/etc/kolla/ceph.backup.{{ ansible_date_time.date }}"
+      args:
+        warn: false  # Suppresses warning about shell usage
+
+    # Create backup of /var/lib/ceph
+    - name: Create backup directory for /var/lib/ceph
+      ansible.builtin.file:
+        path: "/var/lib/kolla/ceph.backup.{{ ansible_date_time.date }}"
+        state: directory
+
+    - name: Backup /var/lib/ceph
+      ansible.builtin.shell: |
+        cp -rfa /var/lib/ceph "/var/lib/kolla/ceph.backup.{{ ansible_date_time.date }}"
+      args:
+        warn: false
+
+  handlers:
+    - name: Clean yum cache
+      ansible.builtin.command: yum clean all
