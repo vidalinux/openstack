@@ -1,0 +1,46 @@
+---
+- name: Safely stop all activating Ceph OSD services
+  hosts: storage
+  become: yes
+  vars:
+    max_retries: 3
+    delay_between_retries: 5
+
+  tasks:
+    - name: Get list of activating OSD services
+      shell: |
+        systemctl list-units --type=service --state=activating \
+        | grep -i 'ceph-osd@' \
+        | awk '{print $1}'
+      register: activating_osds
+      changed_when: false
+
+    - name: Debug list of activating OSDs
+      debug:
+        var: activating_osds.stdout_lines
+      when: activating_osds.stdout_lines | length > 0
+
+    - name: Stop activating OSD services
+      service:
+        name: "{{ item }}"
+        state: stopped
+      loop: "{{ activating_osds.stdout_lines }}"
+      when: activating_osds.stdout_lines | length > 0
+      register: stop_results
+      retries: "{{ max_retries }}"
+      delay: "{{ delay_between_retries }}"
+      until: stop_results is succeeded
+
+    - name: Verify OSDs are stopped
+      shell: |
+        systemctl is-active "{{ item }}"
+      loop: "{{ activating_osds.stdout_lines }}"
+      register: verification_check
+      changed_when: false
+      failed_when: >
+        verification_check.results[ansible_loop.index0].stdout != 'inactive'
+
+    - name: Show final status
+      debug:
+        msg: "Successfully stopped all activating OSD services"
+      when: activating_osds.stdout_lines | length > 0
