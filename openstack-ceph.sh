@@ -124,7 +124,8 @@ rbd_store_ceph_conf = /etc/ceph/ceph.conf
 EOF
 sed -i $'s/\t//g' /etc/kolla/config/glance/*.keyring
 # nova
-scp oscpnode4:/etc/kolla/cinder-backup/ceph.client.cinder.keyring /etc/kolla/config/nova/
+scp oscpnode1:/etc/kolla/cinder-backup/ceph.client.cinder.keyring /etc/kolla/config/nova/
+scp oscpnode4:/etc/kolla/nova-compute/ceph.client.nova.keyring /etc/kolla/config/nova/
 cat /etc/ceph/ceph.conf|grep -e "global" -e "mon\ initial" -e "mon\ host" -e "fsid" > /etc/kolla/config/nova/ceph.conf
 cat >> /etc/kolla/config/nova/ceph.conf << EOF
 keyring = /etc/kolla/cinder-backup/ceph.client.cinder.keyring
