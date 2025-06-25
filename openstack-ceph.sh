@@ -1,5 +1,7 @@
 #!/bin/bash
 
+NODES="oscpnode1 oscpnode2 oscpnode3 oscpnode4 oscpnode5"
+
 if [ $1 = config ];
 then
 # create kolla configs dirs
@@ -35,21 +37,21 @@ scp oscpnode1:/etc/kolla/cinder-backup/ceph.client.cinder-backup.keyring /etc/ko
 scp oscpnode1:/etc/kolla/cinder-backup/ceph.client.cinder.keyring /etc/kolla/config/cinder/cinder-volume/
 cat /etc/ceph/ceph.conf|grep -e "global" -e "mon\ initial" -e "mon\ host" -e "fsid" > /etc/kolla/config/cinder/ceph.conf
 cat >> /etc/kolla/config/cinder/ceph.conf << EOF
-keyring = /etc/kolla/cinder-backup/ceph.client.cinder.keyring
+keyring = /etc/ceph/ceph.client.cinder.keyring
 auth_cluster_required = cephx
 auth_service_required = cephx
 auth_client_required = cephx
 EOF
 cat /etc/ceph/ceph.conf|grep -e "global" -e "mon\ initial" -e "mon\ host" -e "fsid" > /etc/kolla/config/cinder/cinder-backup/ceph.conf
 cat >> /etc/kolla/config/cinder/cinder-backup/ceph.conf << EOF
-keyring = /etc/kolla/cinder-backup/ceph.client.cinder-backup.keyring
+keyring = /etc/ceph/ceph.client.cinder-backup.keyring
 auth_cluster_required = cephx
 auth_service_required = cephx
 auth_client_required = cephx
 EOF
 cat /etc/ceph/ceph.conf|grep -e "global" -e "mon\ initial" -e "mon\ host" -e "fsid" > /etc/kolla/config/cinder/cinder-volume/ceph.conf
 cat >> /etc/kolla/config/cinder/cinder-volume/ceph.conf << EOF
-keyring = /etc/kolla/cinder-backup/ceph.client.cinder.keyring
+keyring = /etc/ceph/ceph.client.cinder.keyring
 auth_cluster_required = cephx
 auth_service_required = cephx
 auth_client_required = cephx
@@ -109,7 +111,7 @@ sed -i $'s/\t//g' /etc/kolla/config/cinder/cinder-volume/*.keyring
 scp oscpnode1:/etc/kolla/glance-api/ceph.client.glance.keyring /etc/kolla/config/glance/
 cat /etc/ceph/ceph.conf|grep -e "global" -e "mon\ initial" -e "mon\ host" -e "fsid" > /etc/kolla/config/glance/ceph.conf
 cat >> /etc/kolla/config/glance/ceph.conf << EOF
-keyring = /etc/kolla/glance-api/ceph.client.glance.keyring
+keyring = /etc/ceph/ceph.client.glance.keyring
 auth_cluster_required = cephx
 auth_service_required = cephx
 auth_client_required = cephx
@@ -128,7 +130,7 @@ scp oscpnode1:/etc/kolla/cinder-backup/ceph.client.cinder.keyring /etc/kolla/con
 scp oscpnode4:/etc/kolla/nova-compute/ceph.client.nova.keyring /etc/kolla/config/nova/
 cat /etc/ceph/ceph.conf|grep -e "global" -e "mon\ initial" -e "mon\ host" -e "fsid" > /etc/kolla/config/nova/ceph.conf
 cat >> /etc/kolla/config/nova/ceph.conf << EOF
-keyring = /etc/kolla/cinder-backup/ceph.client.cinder.keyring
+keyring = /etc/ceph/ceph.client.cinder.keyring
 auth_cluster_required = cephx
 auth_service_required = cephx
 auth_client_required = cephx
@@ -142,3 +144,10 @@ rbd_user=cinder
 EOF
 sed -i $'s/\t//g' /etc/kolla/config/nova/*.keyring
 fi
+
+cp /etc/kolla/cinder-backup/ceph.client.cinder.keyring /etc/ceph/
+cp /etc/kolla/config/nova/ceph.client.nova.keyring /etc/ceph/
+cp /etc/kolla/glance-api/ceph.client.glance.keyring /etc/ceph/
+cp /etc/kolla/cinder-backup/ceph.client.cinder-backup.keyring /etc/ceph/
+
+for u in ${NODES}; do scp /etc/ceph/ceph.client.{cinder,cinder-backup,nova,glance}.keyring root@$u:/etc/ceph/; done
